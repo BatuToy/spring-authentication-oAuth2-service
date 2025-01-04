@@ -12,6 +12,10 @@ public class LoginCommandHandler {
 
     @Transactional
     public LoginResponse login(LoginCommand loginCommand) {
+        // Todo: authentication user first.
+        // Todo: check the necassery principals and credentials for user that trying to log in!
+        // Todo: Return a token:string for a client.
+        // Todo: Finally response:loginResponse at the end!
         return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.dev.batu.authentication_module.dto.register;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +12,14 @@ import lombok.Getter;
 @Getter
 public class RegisterCommand {
     @NotNull
+    @NotBlank(message = "User name must not be blank!")
     private final String userName;
     @NotNull
-    @Email
+    @NotBlank(message = "Email must not be blank!")
+    @Email(message = "Email must be valid!")
     private final String email;
     @NotNull
+    @NotBlank(message = "Password must not be blank!")
     private final String rawPassword;
     //additional fields related to user can come here!
 }
