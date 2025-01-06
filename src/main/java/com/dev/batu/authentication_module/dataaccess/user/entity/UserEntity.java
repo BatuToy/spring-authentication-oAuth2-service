@@ -1,4 +1,4 @@
-package com.dev.batu.authentication_module.entity;
+package com.dev.batu.authentication_module.dataaccess.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,7 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "auth")
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
     @Id
     @Column(nullable = false, unique = true)
     private UUID id;
@@ -34,10 +34,10 @@ public class User implements UserDetails {
     private Role role;
     @CreatedDate
     @Column(updatable = false)
-    private Instant createdAt;
+    private ZonedDateTime createdAt;
     @UpdateTimestamp
     @Column(insertable = false)
-    private Instant updatedAt;
+    private ZonedDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
