@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.Serial;
 import java.nio.file.AccessDeniedException;
 
 @Slf4j
@@ -25,7 +24,7 @@ import java.nio.file.AccessDeniedException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserDetailsServiceImpl userDetailsService;
     private final JwtHelper jwtHelper;
 
     @Override
@@ -36,7 +35,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String userName = null;
             if(authHeader != null && authHeader.startsWith("Bearer ")){
                 token = authHeader.substring(7);
-                userName = jwtHelper.extractUserName(userName);
+                log.info("Token= {}", token);
+                userName = jwtHelper.extractUserName(token);
                 log.info("Request object have \n Token= {} \n userName= {}", token, userName);
             }
             // Each chain represents the pass button. So if we don't have any token
@@ -47,12 +47,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
             if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
                 if(jwtHelper.isTokenValid(token, userDetails)){
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, null);
                     authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request)); // new WebAuthenticationDetails(request);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    log.info("Authentication object persisted successfully in to SecurityContextHolder \n with= {}", authenticationToken.getCredentials());
+                    log.info("Authentication object persisted successfully in to SecurityContextHolder \n with= {}", authenticationToken.getPrincipal());
                 }
             }
             filterChain.doFilter(request, response);

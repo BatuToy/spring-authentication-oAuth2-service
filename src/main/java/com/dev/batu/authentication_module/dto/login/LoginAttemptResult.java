@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class LoginAttempt {
+public class LoginAttemptResult {
     @NotNull
     private final ZonedDateTime attemptAt;
     @NotNull

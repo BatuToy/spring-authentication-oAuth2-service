@@ -25,6 +25,8 @@ public class JwtHelper {
 
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
+    // Todo: Review this class!
+
     public static String generateToken(String userName) {
         return Jwts.builder()
                 .setSubject(userName)
@@ -37,12 +39,16 @@ public class JwtHelper {
 
     public boolean isTokenValid(String token, UserDetails userDetails){
         String userName = extractUserName(token);
-        return (Objects.equals(userDetails.getUsername(), userName) && isTokenExpired(token));
+        return (Objects.equals(userDetails.getUsername(), userName) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token){
         Date expiration = parseToken(token).getExpiration();
         return expiration.before(Date.from(Instant.now()));
+    }
+
+    public static Instant getTokenExpirationDate(String token){
+        return parseToken(token).getExpiration().toInstant();
     }
 
     public String extractUserName(String token) {
@@ -51,13 +57,17 @@ public class JwtHelper {
 
     private static Claims parseToken(String token) {
         try {
-            return Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
                     .build()
-                    .parseClaimsJwt(token)
+                    // ParseClaimsJwt= used for unsigned jwt token in our case when we generate the token we sign the token with 'SHA256!
+                    // ParseClaimsJws= used for signed jws tokens! -> Correct usage in this token flow!
+                    .parseClaimsJws(token)
                     .getBody();
+            log.info("Parsed claims= {}", claims);
+            return claims;
         } catch (SignatureException | ExpiredJwtException exc){
-            log.error("Error occur while parsing the token= {} \n with error= {}", token.substring(7), exc.getLocalizedMessage());
+            log.error("Error occur while parsing the token= {} \n with error= {}", token, exc.getLocalizedMessage());
             throw new AccessDeniedException("Access denied= " +  exc.getLocalizedMessage());
         }
     }

@@ -10,5 +10,5 @@ import org.springframework.http.HttpStatus;
 public final class AppResponse<T> {
     private final T data;
     private final HttpStatus code;
-    private final String message;
+    private String message;
 }

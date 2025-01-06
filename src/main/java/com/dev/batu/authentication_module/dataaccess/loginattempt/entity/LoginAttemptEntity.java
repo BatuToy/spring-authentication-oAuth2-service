@@ -1,4 +1,4 @@
-package com.dev.batu.authentication_module.dataaccess.loginattempt;
+package com.dev.batu.authentication_module.dataaccess.loginattempt.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

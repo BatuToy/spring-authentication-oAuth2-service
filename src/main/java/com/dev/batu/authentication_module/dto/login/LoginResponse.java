@@ -12,10 +12,8 @@ import java.util.UUID;
 @Builder
 @Getter
 public class LoginResponse {
-    private final UUID userId;
-    @NotNull
-    @Email
-    private final String email;
-    @NotNull
-    private final String message;
+    @NotNull(message = "Token must not be null!")
+    private final String token;
+
+    private String message;
 }

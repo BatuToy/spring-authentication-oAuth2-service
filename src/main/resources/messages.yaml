@@ -1,0 +1,5 @@
+validation:
+  too-long: "Giving value is too LONG!"
+  too-short: "Giving value is too SHORT!"
+  blank-value: "Giving value is BLANK"
+  null-value: "NULL value!"

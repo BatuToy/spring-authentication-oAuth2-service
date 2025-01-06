@@ -1,4 +1,4 @@
-package com.dev.batu.authentication_module.dataaccess.entity;
+package com.dev.batu.authentication_module.dataaccess.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "auth")
-public class UserEntity implements UserDetails {
+public class UserEntity {
     @Id
     @Column(nullable = false, unique = true)
     private UUID id;
@@ -39,13 +39,4 @@ public class UserEntity implements UserDetails {
     @Column(insertable = false)
     private ZonedDateTime updatedAt;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    @Override
-    public String getUsername() {
-        return "";
-    }
 }

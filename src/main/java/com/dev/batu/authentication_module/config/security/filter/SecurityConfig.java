@@ -31,8 +31,9 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers(HttpMethod.POST,  "/api/v1/auth/register/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,  "/api/v1/auth/login/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,  "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,  "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "auth/loginAttempts").permitAll()
                         .anyRequest().authenticated())
                 .authenticationManager(authenticationManager)
                 // Todo: Write a JWTFilter.class for filtering the token.

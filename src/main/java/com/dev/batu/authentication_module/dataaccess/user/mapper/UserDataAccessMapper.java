@@ -7,16 +7,18 @@ import com.dev.batu.authentication_module.domain.user.UserId;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDataMapper {
+public class UserDataAccessMapper {
 
     public UserEntity UserToUserEntity(User domainUser){
         return UserEntity.builder()
                 .id(domainUser.getId().getValue())
                 .email(domainUser.getEmail())
                 .userName(domainUser.getUserName())
-                .role(domainRoleToRoleEntity(domainUser.getRole()))
+                .password(domainUser.getPassword())
                 .createdAt(domainUser.getCreatedAt())
                 .updatedAt(domainUser.getUpdatedAt())
+                // Todo: Roles will be implemented soon!
+                //.role(domainRoleToRoleEntity(domainUser.getRole()))
                 .build();
     }
 
@@ -24,11 +26,12 @@ public class UserDataMapper {
         return User.builder()
                 .userId(new UserId(userEntity.getId()))
                 .email(userEntity.getEmail())
-                .userName(userEntity.getUsername())
+                .userName(userEntity.getUserName())
                 .password(userEntity.getPassword())
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
-                .role(roleEntityToDomainRole(userEntity.getRole()))
+                // Todo: Roles will be implemented soon!
+                //.role(roleEntityToDomainRole(userEntity.getRole()))
                 .build();
     }
 

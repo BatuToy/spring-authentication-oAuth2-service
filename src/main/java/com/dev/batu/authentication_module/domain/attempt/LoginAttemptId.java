@@ -1,2 +1,11 @@
-package com.dev.batu.authentication_module.domain.attempt;public class LoginAttemptId {
+package com.dev.batu.authentication_module.domain.attempt;
+
+import com.dev.batu.authentication_module.common.BaseId;
+
+import java.util.UUID;
+
+public class LoginAttemptId extends BaseId<UUID> {
+    public LoginAttemptId(UUID value) {
+        super(value);
+    }
 }
