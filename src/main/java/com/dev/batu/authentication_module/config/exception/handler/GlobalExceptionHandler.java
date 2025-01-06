@@ -7,6 +7,7 @@ import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,6 +42,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ResponseBody
+    @ExceptionHandler(exception = {BadCredentialsException.class})
+    @ResponseStatus(code = FORBIDDEN)
+    public ResponseEntity<ErrorDto> handle(BadCredentialsException badCredentialsException) {
+        final String excMsg = badCredentialsException.getMessage();
+        log.error(excMsg, badCredentialsException);
+        return ResponseEntity.status(FORBIDDEN.value()).body(
+                ErrorDto.builder()
+                        .code(FORBIDDEN.getReasonPhrase())
+                        .message(excMsg)
+                        .build()
+        );
+    }
+
     // Todo: In general handling for the InternalServerError gives the reasonable statements except defined ones!@
     @ResponseBody
     @ExceptionHandler(exception = {Exception.class})
@@ -63,8 +78,7 @@ public class GlobalExceptionHandler {
     public ErrorDto handle(ValidationException exc) {
         if (exc instanceof ConstraintViolationException) {
             String violations = extractViolation((ConstraintViolationException) exc);
-            final String excMsg = exc.getMessage();
-            log.error(excMsg, exc);
+            log.error(violations, exc);
             return ErrorDto.builder()
                     .message(violations.toLowerCase())
                     .code(BAD_REQUEST.getReasonPhrase())

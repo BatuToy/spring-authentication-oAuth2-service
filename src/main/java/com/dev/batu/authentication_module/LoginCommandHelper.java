@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
@@ -22,12 +23,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LoginCommandHelper {
 
-    private final LoginAttemptRepository loginAttemptRepository;
     private final AuthenticationManager authenticationManager;
+    private final LoginAttemptCommandHelper loginAttemptCommandHelper;
 
-
-
-    @Transactional
     public void persisLoginAttempt(LoginCommand loginCommand){
         log.info("Persisting the login attempt saving for user with email= {}", loginCommand.getEmail());
         LoginAttempt loginAttempt = LoginAttempt.builder()
@@ -36,7 +34,7 @@ public class LoginCommandHelper {
                 .isSuccess(true)
                 .build();
         checkLogInAttempt(loginCommand, loginAttempt);
-        saveLoginAttempt(loginAttempt);
+        loginAttemptCommandHelper.saveLoginAttempt(loginAttempt);
         log.info("Login attempted successfully with id= {}", loginAttempt.getId().getValue());
     }
 
@@ -45,17 +43,10 @@ public class LoginCommandHelper {
             authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(loginCommand.getEmail(), loginCommand.getRawPassword()));
         } catch (BadCredentialsException exc){
             loginAttempt.setSuccess(false);
-            saveLoginAttempt(loginAttempt);
+            loginAttemptCommandHelper.saveLoginAttempt(loginAttempt);
             log.error(exc.getLocalizedMessage(), exc);
-            throw new BadCredentialsException("Authentication for login fails cause of bad credentials \n error= " + exc.getLocalizedMessage());
+            throw new BadCredentialsException("Authentication for login fails cause of bad credentials \t error= " + exc.getLocalizedMessage());
         }
     }
 
-    private void saveLoginAttempt(LoginAttempt loginAttempt){
-        LoginAttempt result = loginAttemptRepository.save(loginAttempt);
-        if(result == null){
-            log.error("Login attempt can not save for attempt id= {}", loginAttempt.getId().getValue());
-            throw new DomainException("Login attempt can not save successfully!");
-        }
-    }
 }

@@ -1,6 +1,5 @@
 package com.dev.batu.authentication_module.dataaccess.user.adapter;
 
-import com.dev.batu.authentication_module.dataaccess.user.entity.UserEntity;
 import com.dev.batu.authentication_module.dataaccess.user.mapper.UserDataAccessMapper;
 import com.dev.batu.authentication_module.dataaccess.user.repo.UserJpaRepository;
 import com.dev.batu.authentication_module.domain.user.User;
