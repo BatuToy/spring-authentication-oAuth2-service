@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.ZonedDateTime;
 
@@ -13,6 +14,7 @@ import java.time.ZonedDateTime;
 public class LoginAttemptResult {
     @NotNull
     private final ZonedDateTime attemptAt;
+
     @NotNull
     private final Boolean isSuccess;
 }

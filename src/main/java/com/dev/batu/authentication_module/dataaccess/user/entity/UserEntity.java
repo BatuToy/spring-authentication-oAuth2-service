@@ -2,6 +2,7 @@ package com.dev.batu.authentication_module.dataaccess.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,13 +31,12 @@ public class UserEntity {
     private String email;
     @Column(nullable = false, unique = true)
     private String password;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> authorities;
     @CreatedDate
     @Column(updatable = false)
     private ZonedDateTime createdAt;
     @UpdateTimestamp
     @Column(insertable = false)
     private ZonedDateTime updatedAt;
-
 }

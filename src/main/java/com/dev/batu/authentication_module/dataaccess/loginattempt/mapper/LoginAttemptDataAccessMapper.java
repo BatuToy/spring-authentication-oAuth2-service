@@ -1,8 +1,8 @@
 package com.dev.batu.authentication_module.dataaccess.loginattempt.mapper;
 
 import com.dev.batu.authentication_module.dataaccess.loginattempt.entity.LoginAttemptEntity;
-import com.dev.batu.authentication_module.domain.attempt.LoginAttempt;
-import com.dev.batu.authentication_module.domain.attempt.LoginAttemptId;
+import com.dev.batu.authentication_module.domain.entity.LoginAttempt;
+import com.dev.batu.authentication_module.domain.valueobject.LoginAttemptId;
 import org.springframework.stereotype.Component;
 
 @Component

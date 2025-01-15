@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,51 +25,44 @@ public class GlobalExceptionHandler {
      * @ResponseBody 's importance= Helping to return a message to client!
      */
 
+    // Todo: In general handling for the InternalServerError gives the reasonable statements except defined ones!@
 
+    @ResponseBody
+    @ExceptionHandler(exception = {Exception.class})
+    @ResponseStatus(code = INTERNAL_SERVER_ERROR)
+    public ErrorDto handle(Exception exception) {
+        final String excMsg = exception.getMessage();
+        log.error(excMsg, exception);
+        return ErrorDto.builder()
+                        .code(INTERNAL_SERVER_ERROR.getReasonPhrase())
+                        .message(excMsg)
+                        .build();
+    }
 
     @ResponseBody
     @ExceptionHandler(exception = {AccessDeniedException.class})
     @ResponseStatus(code = FORBIDDEN)
-    public ResponseEntity<ErrorDto> handle(AccessDeniedException accessDeniedException) {
+    public ErrorDto handle(AccessDeniedException accessDeniedException) {
         final String excMsg = accessDeniedException.getMessage();
         log.error(excMsg, accessDeniedException);
-        return ResponseEntity.status(FORBIDDEN.value()).body(
-                ErrorDto.builder()
+        return ErrorDto.builder()
                         .code(FORBIDDEN.getReasonPhrase())
                         .message(excMsg)
-                        .build()
-        );
+                        .build();
     }
 
     @ResponseBody
     @ExceptionHandler(exception = {BadCredentialsException.class})
     @ResponseStatus(code = FORBIDDEN)
-    public ResponseEntity<ErrorDto> handle(BadCredentialsException badCredentialsException) {
+    public ErrorDto handle(BadCredentialsException badCredentialsException) {
         final String excMsg = badCredentialsException.getMessage();
         log.error(excMsg, badCredentialsException);
-        return ResponseEntity.status(FORBIDDEN.value()).body(
-                ErrorDto.builder()
+        return ErrorDto.builder()
                         .code(FORBIDDEN.getReasonPhrase())
                         .message(excMsg)
-                        .build()
-        );
+                        .build();
     }
 
-    // Todo: In general handling for the InternalServerError gives the reasonable statements except defined ones!@
-    @ResponseBody
-    @ExceptionHandler(exception = {Exception.class})
-    @ResponseStatus(code = INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorDto> handle(Exception exception) {
-        // todo: getMessage() and getLocalizedMessage() is the same thing eventually! USAGE IMPORTANCE!
-        final String excMsg = exception.getMessage();
-        log.error(excMsg, exception);
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR.value())
-                .body(ErrorDto.builder()
-                        .code(INTERNAL_SERVER_ERROR.getReasonPhrase())
-                        .message(excMsg)
-                        .build()
-                );
-    }
 
     @ResponseBody
     @ExceptionHandler(exception = {ValidationException.class})
@@ -96,7 +88,7 @@ public class GlobalExceptionHandler {
     private String extractViolation(ConstraintViolationException exc) {
         return exc.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining("--"));
+                .collect(Collectors.joining("---"));
     }
 
 

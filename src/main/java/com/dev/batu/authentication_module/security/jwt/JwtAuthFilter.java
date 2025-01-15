@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -18,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.Collection;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,21 +38,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 userName = jwtHelper.extractUserName(token);
                 log.info("Request object have \n Token= {} \n userName= {}", token, userName);
             }
-            // Each chain represents the pass button. So if we don't have any token
-            // which in the signup and log in request end user doesn't have any we pass the filter go for next filter!
             if(token == null){
-                log.info("Token yet not given to user!");
+                log.info("Token not given passing!");
                 filterChain.doFilter(request, response);
                 return;
             }
             if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
                 if(jwtHelper.isTokenValid(token, userDetails)){
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, token, authorities);
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,  null);
                     authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request)); // new WebAuthenticationDetails(request);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    log.info("Authentication object persisted successfully in to SecurityContextHolder \n with= {}", authenticationToken.getPrincipal());
                 }
             }
             filterChain.doFilter(request, response);
@@ -62,5 +56,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.error("Access denied= {}", exc.getLocalizedMessage());
             throw new AccessDeniedException("Access denied= " + exc.getLocalizedMessage());
         }
+
     }
 }

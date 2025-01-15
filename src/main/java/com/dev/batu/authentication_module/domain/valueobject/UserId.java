@@ -1,4 +1,4 @@
-package com.dev.batu.authentication_module.domain.user;
+package com.dev.batu.authentication_module.domain.valueobject;
 
 import com.dev.batu.authentication_module.common.BaseId;
 

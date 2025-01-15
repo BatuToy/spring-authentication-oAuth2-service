@@ -1,10 +1,9 @@
 package com.dev.batu.authentication_module.mapper;
 
-import com.dev.batu.authentication_module.domain.attempt.LoginAttempt;
-import com.dev.batu.authentication_module.domain.user.User;
-import com.dev.batu.authentication_module.domain.user.UserId;
+import com.dev.batu.authentication_module.domain.entity.Contact;
+import com.dev.batu.authentication_module.domain.entity.LoginAttempt;
+import com.dev.batu.authentication_module.domain.aggregateroot.User;
 import com.dev.batu.authentication_module.dto.login.LoginAttemptResult;
-import com.dev.batu.authentication_module.dto.login.LoginCommand;
 import com.dev.batu.authentication_module.dto.register.RegisterCommand;
 import com.dev.batu.authentication_module.dto.register.RegisterResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,21 +13,21 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.UUID;
+
 @RequiredArgsConstructor
 @Component
-public class AuthDataMapper {
+public class UserDataMapper {
 
     private final PasswordEncoder passwordEncoder;
 
     public User registerCommandToDomainUser(RegisterCommand registerCommand){
         return User.builder()
-                .userId(new UserId(UUID.randomUUID()))
                 .email(registerCommand.getEmail())
                 .userName(registerCommand.getUserName())
-                .password(passwordEncoder.encode(registerCommand.getRawPassword()))
+                .encodedPassword(passwordEncoder.encode(registerCommand.getRawPassword()))
                 .createdAt(ZonedDateTime.now(ZoneId.of("UTC")))
                 .updatedAt(ZonedDateTime.now(ZoneId.of("UTC")))
+                .contact(contactDtoToContact(registerCommand.getContact()))
                 .build();
     }
 
@@ -47,5 +46,9 @@ public class AuthDataMapper {
                         .isSuccess(loginAttempt.isSuccess())
                         .build()))
                 .toList();
+    }
+
+    private Contact contactDtoToContact(com.dev.batu.authentication_module.dto.register.Contact contact){
+        return new Contact(contact.getPhoneNumber());
     }
 }

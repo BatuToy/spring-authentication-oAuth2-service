@@ -20,6 +20,8 @@ import java.util.UUID;
 public class LoginAttemptEntity {
     @Id
     private UUID id;
+
     private ZonedDateTime attemptedAt;
+
     private boolean isSuccess;
 }

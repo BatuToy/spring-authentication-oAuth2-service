@@ -10,23 +10,25 @@ import lombok.Getter;
 @Getter
 public class RegisterCommand {
 
-    // Todo: @NotBlank is not working!
-
     @Size.List({
-            @Size(min = 4, message = "{validation.too-short}"),
-            @Size(max = 11, message = "{validation.too-long}")
+            @Size(min = 4, message = "Username is too short!"),
+            @Size(max = 11, message = "Username is too long!")
     })
     @NotBlank(message = "User name must not be blank!")
     private final String userName;
 
-    @NotBlank(message = "Email must not be blank!")
     @Email(message = "Email must be valid!")
+    @NotBlank(message = "Email must not be blank!")
+    @NotNull(message = "Email is null!")
     private final String email;
 
     @Size.List({
-            @Size(min = 8, message = "{validation.too-short}"),
-            @Size(max = 22, message = "{validation.too-long}")
+            @Size(min = 8, message = "Password is too short!"),
+            @Size(max = 22, message = "Password is too long!")
     })
     @NotBlank(message = "Password must not be blank!")
     private final String rawPassword;
+
+    @NotNull
+    private final Contact contact;
 }

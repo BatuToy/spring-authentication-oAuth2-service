@@ -1,7 +1,8 @@
 package com.dev.batu.authentication_module.security.userdetails;
 
-import com.dev.batu.authentication_module.dataaccess.user.repo.UserJpaRepository;
+import com.dev.batu.authentication_module.ports.output.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -10,16 +11,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    private final UserJpaRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email).map(
-                    u -> org.springframework.security.core.userdetails.User.builder()
-                            .username(u.getEmail())
-                            .password(u.getPassword())
-                            .build())
+                        user -> org.springframework.security.core.userdetails.User.builder()
+                                .username(user.getEmail())
+                                .password(user.getEncodedPassword())
+                                .authorities(user.getAuthorities().stream()
+                                        .map(SimpleGrantedAuthority::new)
+                                        .toList())
+                                .build())
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with user name= " + email)
-        );
+                );
     }
 }

@@ -1,24 +1,27 @@
 package com.dev.batu.authentication_module.dataaccess.user.mapper;
 
 import com.dev.batu.authentication_module.dataaccess.user.entity.UserEntity;
-import com.dev.batu.authentication_module.domain.user.Role;
-import com.dev.batu.authentication_module.domain.user.User;
-import com.dev.batu.authentication_module.domain.user.UserId;
+import com.dev.batu.authentication_module.domain.aggregateroot.User;
+import com.dev.batu.authentication_module.domain.valueobject.UserId;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class UserDataAccessMapper {
 
-    public UserEntity UserToUserEntity(User domainUser){
+    private final PasswordEncoder passwordEncoder;
+
+    public UserEntity userToUserEntity(User domainUser){
         return UserEntity.builder()
                 .id(domainUser.getId().getValue())
                 .email(domainUser.getEmail())
                 .userName(domainUser.getUserName())
-                .password(domainUser.getPassword())
+                .password(passwordEncoder.encode(domainUser.getEncodedPassword()))
                 .createdAt(domainUser.getCreatedAt())
                 .updatedAt(domainUser.getUpdatedAt())
-                // Todo: Roles will be implemented soon!
-                //.role(domainRoleToRoleEntity(domainUser.getRole()))
+                .authorities(domainUser.getAuthorities())
                 .build();
     }
 
@@ -27,19 +30,11 @@ public class UserDataAccessMapper {
                 .userId(new UserId(userEntity.getId()))
                 .email(userEntity.getEmail())
                 .userName(userEntity.getUserName())
-                .password(userEntity.getPassword())
+                .encodedPassword(userEntity.getPassword())
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
-                // Todo: Roles will be implemented soon!
-                //.role(roleEntityToDomainRole(userEntity.getRole()))
+                .authorities(userEntity.getAuthorities())
                 .build();
     }
 
-    private com.dev.batu.authentication_module.dataaccess.user.entity.Role domainRoleToRoleEntity(Role domainRole){
-        return com.dev.batu.authentication_module.dataaccess.user.entity.Role.valueOf(domainRole.name());
-    }
-
-    private Role roleEntityToDomainRole(com.dev.batu.authentication_module.dataaccess.user.entity.Role roleEntity){
-        return Role.valueOf(roleEntity.name());
-    }
 }

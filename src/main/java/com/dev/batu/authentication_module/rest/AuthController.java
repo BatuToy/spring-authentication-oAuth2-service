@@ -10,9 +10,8 @@ import com.dev.batu.authentication_module.dto.response.AppResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -48,14 +47,14 @@ public class AuthController {
     @GetMapping(value = "/loginAttempts")
     public AppResponse<TrackLoginAttemptsResponse> loginAttempts(){
         log.info("Login attempts starting to listing!");
-        TrackLoginAttemptsResponse trackLoginAttemptsResponses = applicationService.trackLoginAttempts();
+        TrackLoginAttemptsResponse response = applicationService.trackLoginAttempts();
         return new AppResponse<>(
-                trackLoginAttemptsResponses,
+                response,
                 HttpStatus.OK,
                 "Login attempts listed successfully!"
         );
     }
-
+    // todo : testing the authentication gate is working or not !
     @PostMapping(value = "/test/{msg}")
     public AppResponse<String> test(@PathVariable("msg") String msg){
         return new AppResponse<>(
