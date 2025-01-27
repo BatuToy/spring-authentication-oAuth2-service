@@ -2,8 +2,11 @@ package com.dev.batu.authentication_module.config.service;
 
 import com.dev.batu.authentication_module.domain.DomainService;
 import com.dev.batu.authentication_module.domain.DomainServiceImpl;
+import com.dev.batu.authentication_module.ports.output.UserRepository;
+import com.dev.batu.authentication_module.security.userdetails.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
 public class ServiceConfig {
@@ -12,5 +15,4 @@ public class ServiceConfig {
     public DomainService domainService(){
         return new DomainServiceImpl();
     }
-
 }
