@@ -1,7 +1,6 @@
 package com.dev.batu.authentication_module;
 
 import com.dev.batu.authentication_module.domain.entity.LoginAttempt;
-import com.dev.batu.authentication_module.domain.exception.DomainException;
 import com.dev.batu.authentication_module.domain.exception.UserDomainException;
 import com.dev.batu.authentication_module.ports.output.LoginAttemptRepository;
 import lombok.RequiredArgsConstructor;

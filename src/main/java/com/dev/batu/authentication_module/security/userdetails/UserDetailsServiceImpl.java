@@ -2,6 +2,7 @@ package com.dev.batu.authentication_module.security.userdetails;
 
 import com.dev.batu.authentication_module.ports.output.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,11 +20,10 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
                         user -> org.springframework.security.core.userdetails.User.builder()
                                 .username(user.getEmail())
                                 .password(user.getEncodedPassword())
-                                .authorities(user.getAuthorities().stream()
-                                        .map(SimpleGrantedAuthority::new)
-                                        .toList())
+                                .authorities(user.getRoles().stream()
+                                        .map(role -> new SimpleGrantedAuthority(role.getRoleName())).toList())
                                 .build())
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with user name= " + email)
+                                .orElseThrow(() -> new UsernameNotFoundException("Username not found with user name= " + email)
                 );
     }
 }

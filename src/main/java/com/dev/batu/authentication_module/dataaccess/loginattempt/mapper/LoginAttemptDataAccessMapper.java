@@ -8,19 +8,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginAttemptDataAccessMapper {
 
-    public LoginAttemptEntity loginAttemptToLoginAttemptEntity(LoginAttempt loginAttempt){
+    public LoginAttemptEntity loginAttemptToLoginAttemptEntity(LoginAttempt loginAttempt) {
         return LoginAttemptEntity.builder()
                 .id(loginAttempt.getId().getValue())
                 .attemptedAt(loginAttempt.getAttemptedAt())
+                .excMessage(loginAttempt.getExcMessage())
                 .isSuccess(loginAttempt.isSuccess())
                 .build();
     }
 
-    public LoginAttempt loginAttemptEntityToLoginAttempt(LoginAttemptEntity loginAttemptEntity){
-        return LoginAttempt.builder()
-                .loginAttemptId( new LoginAttemptId(loginAttemptEntity.getId()))
-                .isSuccess(loginAttemptEntity.isSuccess())
-                .attemptedAt(loginAttemptEntity.getAttemptedAt())
-                .build();
+    public LoginAttempt loginAttemptEntityToLoginAttempt(LoginAttemptEntity loginAttemptEntity) {
+        return new LoginAttempt(
+                new LoginAttemptId(loginAttemptEntity.getId()),
+                loginAttemptEntity.getAttemptedAt(),
+                loginAttemptEntity.getExcMessage(),
+                loginAttemptEntity.isSuccess()
+        );
     }
 }

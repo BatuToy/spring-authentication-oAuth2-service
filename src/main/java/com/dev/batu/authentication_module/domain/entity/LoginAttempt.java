@@ -11,7 +11,16 @@ public class LoginAttempt extends BaseEntity<LoginAttemptId> {
 
     private final ZonedDateTime attemptedAt;
 
+    private String excMessage;
+
     private  boolean isSuccess;
+
+    public LoginAttempt(LoginAttemptId loginAttemptId, ZonedDateTime attemptedAt, String excMessage, boolean isSuccess) {
+        this.excMessage = excMessage;
+        super.setId(loginAttemptId);
+        this.attemptedAt = attemptedAt;
+        this.isSuccess = isSuccess;
+    }
 
     public LoginAttempt(LoginAttemptId loginAttemptId, ZonedDateTime attemptedAt, boolean isSuccess) {
         super.setId(loginAttemptId);
@@ -23,12 +32,20 @@ public class LoginAttempt extends BaseEntity<LoginAttemptId> {
         return attemptedAt;
     }
 
+    public String getExcMessage() {
+        return excMessage;
+    }
+
     public boolean isSuccess() {
         return isSuccess;
     }
 
     public void setSuccess(boolean success) {
         isSuccess = success;
+    }
+
+    public void setExcMessage(String excMessage) {
+        this.excMessage = excMessage;
     }
 }
 

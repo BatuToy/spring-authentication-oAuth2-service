@@ -22,7 +22,4 @@ public class RegisterCommandHandler {
         return userDataMapper.domainUserToRegisterResponse(userCreatedEvent.getUser(),
                 "User registered with user id= " + userCreatedEvent.getUser().getId().getValue());
     }
-
-
-
 }

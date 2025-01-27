@@ -3,59 +3,83 @@ package com.dev.batu.authentication_module.domain.aggregateroot;
 import com.dev.batu.authentication_module.common.BaseEntity;
 import com.dev.batu.authentication_module.domain.entity.Contact;
 import com.dev.batu.authentication_module.domain.exception.UserDomainException;
+import com.dev.batu.authentication_module.domain.entity.Role;
 import com.dev.batu.authentication_module.domain.valueobject.UserId;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-public class User extends BaseEntity<UserId>  {
+public class User extends BaseEntity<UserId> implements UserDetails {
 
     public static final Logger log = Logger.getLogger(User.class.getName());
 
-    private final String userName;
     private final String email;
     private final String encodedPassword;
     private final Contact contact;
     private final ZonedDateTime createdAt;
-    private final ZonedDateTime updatedAt;
-    private List<String> authorities;
 
-    public User(UserId userId, String userName, String email, String encodedPassword, Contact contact, ZonedDateTime createdAt, ZonedDateTime updatedAt, List<String> authorities) {
-        super.setId(userId);
+    private String userName;
+    private ZonedDateTime updatedAt;
+    private Set<Role> roles = new HashSet<>();
+
+    public User(String userName, String email, String encodedPassword, Contact contact, ZonedDateTime createdAt, ZonedDateTime updatedAt, Set<Role> roles) {
         this.userName = userName;
         this.email = email;
         this.encodedPassword = encodedPassword;
         this.contact = contact;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.authorities = authorities;
+        this.roles = roles;
     }
 
     public void initializeUser(){
-        super.setId( new UserId( UUID.randomUUID()));
-        this.contact.initializeContact(super.getId());
-        this.authorities = List.of("ROLE_USER");
+        super.setId(new UserId( UUID.randomUUID()));
+        initializeContactToUser();
+        initializeRoleToUser();
     }
 
     public void validateUser(){
-        validateIdAndAuthorities();
+        validateId();
         validatePasswordAndEmail();
+        validateRoles();
+    }
+
+    private void initializeContactToUser(){
+        contact.initializeContact(super.getId());
+    }
+
+    private void initializeRoleToUser(){
+        HashSet<Role> roles = new HashSet<>();
+        Role role = new Role();
+        Role new_role = role.initializeRole(super.getId());
+        roles.add(new_role);
+        this.roles = roles;
+    }
+
+    private void validateRoles(){
+        if(this.roles != null){
+            log.info("Roles are not in the correct statement!");
+            throw new UserDomainException("Roles are not in the correct statement!");
+        }
     }
 
 
-    private void validateIdAndAuthorities() {
-        if(super.getId().getValue() != null || !this.authorities.isEmpty()){
+    private void validateId() {
+        if(super.getId() != null){
             log.info("User is not in correct state for initialization!");
             throw new UserDomainException("User is not in correct state for initialization!");
         }
     }
 
     private void validatePasswordAndEmail() {
-        if(!this.encodedPassword.isEmpty() || !this.email.isEmpty()){
-            log.info("Password or email already initialized!");
-            throw new UserDomainException("Password or email already initialized!");
+        if(this.encodedPassword.isEmpty() || this.email.isEmpty()){
+            log.info("Password or email can not be null!");
+            throw new UserDomainException("Password or email can not be a null value!");
         }
     }
 
@@ -67,7 +91,7 @@ public class User extends BaseEntity<UserId>  {
         contact = builder.contact;
         createdAt = builder.createdAt;
         updatedAt = builder.updatedAt;
-        authorities = builder.authorities;
+        roles = builder.roles;
     }
 
     public static Builder builder() {
@@ -78,12 +102,16 @@ public class User extends BaseEntity<UserId>  {
         return this.email;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
     public String getUserName() {
-        return this.userName;
+        return userName;
     }
 
     public String getEncodedPassword() {
-        return this.encodedPassword;
+        return encodedPassword;
     }
 
     public ZonedDateTime getCreatedAt() {
@@ -94,9 +122,24 @@ public class User extends BaseEntity<UserId>  {
         return updatedAt;
     }
 
-    public List<String> getAuthorities() {return authorities;}
+    public Contact getContact() {
+        return contact;
+    }
 
-    public Contact getContact() {return contact;}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getPassword() {
+        return this.encodedPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 
     public static final class Builder {
         private UserId userId;
@@ -106,7 +149,7 @@ public class User extends BaseEntity<UserId>  {
         private Contact contact;
         private ZonedDateTime createdAt;
         private ZonedDateTime updatedAt;
-        private List<String> authorities;
+        private Set<Role> roles;
 
         private Builder() {
         }
@@ -136,6 +179,11 @@ public class User extends BaseEntity<UserId>  {
             return this;
         }
 
+        public Builder roles(Set<Role> val){
+            roles = val;
+            return this;
+        }
+
         public Builder createdAt(ZonedDateTime val) {
             createdAt = val;
             return this;
@@ -143,11 +191,6 @@ public class User extends BaseEntity<UserId>  {
 
         public Builder updatedAt(ZonedDateTime val) {
             updatedAt = val;
-            return this;
-        }
-
-        public Builder authorities(List<String> val){
-            authorities = val;
             return this;
         }
 

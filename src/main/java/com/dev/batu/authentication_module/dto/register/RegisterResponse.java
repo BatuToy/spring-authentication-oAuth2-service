@@ -11,5 +11,8 @@ import lombok.Getter;
 public class RegisterResponse {
     @NotNull
     private final String userName;
+    @NotNull
+    private final String role;
+
     private final String message;
 }

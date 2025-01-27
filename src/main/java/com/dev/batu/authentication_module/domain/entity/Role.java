@@ -1,19 +1,21 @@
-package com.dev.batu.authentication_module.domain.valueobject;
+package com.dev.batu.authentication_module.domain.entity;
 
 import com.dev.batu.authentication_module.common.BaseEntity;
+import com.dev.batu.authentication_module.domain.valueobject.RoleId;
+import com.dev.batu.authentication_module.domain.valueobject.UserId;
 
 import java.util.UUID;
 
 public class Role extends BaseEntity<RoleId> {
 
-    private final RoleId roleId;
-    private final String roleName;
-
+    private String roleName;
     private UserId userId;
 
+    public Role() {
+    }
 
     public Role(RoleId roleId, UserId userId, String roleName) {
-        this.roleId = roleId;
+        super.setId(roleId);
         this.userId = userId;
         this.roleName = roleName;
     }
@@ -22,16 +24,14 @@ public class Role extends BaseEntity<RoleId> {
         return userId;
     }
 
-    public RoleId getRoleId() {
-        return roleId;
-    }
-
     public String getRoleName() {
         return roleName;
     }
 
-    public void initializeRole(UserId userId){
+    public Role initializeRole(UserId userId){
         super.setId( new RoleId(UUID.randomUUID()));
+        this.roleName = "ROLE_USER";
         this.userId = userId;
+        return this;
     }
 }

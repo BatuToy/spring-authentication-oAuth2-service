@@ -40,9 +40,10 @@ public class LoginCommandHelper {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginCommand.getEmail(), loginCommand.getRawPassword()));
         } catch (BadCredentialsException exc) {
             loginAttempt.setSuccess(false);
+            loginAttempt.setExcMessage(exc.getMessage());
             loginAttemptCommandHelper.saveLoginAttempt(loginAttempt);
             log.error(exc.getLocalizedMessage(), exc);
-            throw new BadCredentialsException("Authentication for login fails cause of bad credentials \t error= " + exc.getLocalizedMessage());
+            throw new BadCredentialsException("Authentication for login fails cause of bad credentials \t error= " + exc.getMessage());
         }
     }
 

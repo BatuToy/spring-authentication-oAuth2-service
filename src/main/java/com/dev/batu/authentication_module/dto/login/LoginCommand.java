@@ -21,7 +21,7 @@ public class LoginCommand {
     @NotBlank(message = "Password must not be blank!")
     @Size.List({
             @Size(min = 8, message = "Password is too short!"),
-            @Size(max = 8, message = "Password is too long!")
+            @Size(max = 22, message = "Password is too long!")
     })
     private final String rawPassword;
 }

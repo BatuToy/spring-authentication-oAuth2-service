@@ -3,6 +3,7 @@ package com.dev.batu.authentication_module.mapper;
 import com.dev.batu.authentication_module.domain.entity.Contact;
 import com.dev.batu.authentication_module.domain.entity.LoginAttempt;
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
+import com.dev.batu.authentication_module.domain.entity.Role;
 import com.dev.batu.authentication_module.dto.login.LoginAttemptResult;
 import com.dev.batu.authentication_module.dto.register.RegisterCommand;
 import com.dev.batu.authentication_module.dto.register.RegisterResponse;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -35,6 +37,7 @@ public class UserDataMapper {
         return RegisterResponse.builder()
                 .userName(user.getUserName())
                 .message(message)
+                .role(user.getRoles().stream().map(Role::getRoleName).collect(Collectors.joining("|-|")))
                 .build();
     }
 

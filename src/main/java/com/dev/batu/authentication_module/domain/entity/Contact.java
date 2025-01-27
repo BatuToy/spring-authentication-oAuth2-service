@@ -7,8 +7,9 @@ import com.dev.batu.authentication_module.domain.valueobject.UserId;
 import java.util.UUID;
 
 public class Contact extends BaseEntity<ContactId> {
-    private UserId userId;
     private final String cellPhoneNumber;
+
+    private UserId userId;
 
     public Contact(ContactId contactId, String cellPhoneNumber, UserId userId) {
         super.setId(contactId);
@@ -16,12 +17,17 @@ public class Contact extends BaseEntity<ContactId> {
         this.userId = userId;
     }
 
+    public Contact(ContactId contactId, String cellPhoneNumber){
+        super.setId(contactId);
+        this.cellPhoneNumber = cellPhoneNumber;
+    }
+
     public Contact(String cellPhoneNumber){
         this.cellPhoneNumber = cellPhoneNumber;
     }
 
     public void initializeContact(UserId userId){
-        super.setId( new ContactId(UUID.randomUUID()));
+        super.setId(new ContactId(UUID.randomUUID()));
         this.userId = userId;
     }
 

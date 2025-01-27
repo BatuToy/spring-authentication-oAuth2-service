@@ -45,6 +45,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/loginAttempts")
+    @PreAuthorize("hasRole('ADMIN')")
     public AppResponse<TrackLoginAttemptsResponse> loginAttempts(){
         log.info("Login attempts starting to listing!");
         TrackLoginAttemptsResponse response = applicationService.trackLoginAttempts();
@@ -54,14 +55,4 @@ public class AuthController {
                 "Login attempts listed successfully!"
         );
     }
-    // todo : testing the authentication gate is working or not !
-    @PostMapping(value = "/test/{msg}")
-    public AppResponse<String> test(@PathVariable("msg") String msg){
-        return new AppResponse<>(
-                msg,
-                HttpStatus.ACCEPTED,
-                "test!"
-        );
-    }
-
 }

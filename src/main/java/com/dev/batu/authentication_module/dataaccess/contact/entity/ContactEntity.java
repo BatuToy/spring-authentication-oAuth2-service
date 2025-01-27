@@ -19,9 +19,10 @@ public class ContactEntity {
     @Id
     private UUID id;
 
-    @Column(unique = true, nullable = false, name = "CELL_PHONE")
+    @Column(unique = true, nullable = false, name = "cell_phone")
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "contact")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 }

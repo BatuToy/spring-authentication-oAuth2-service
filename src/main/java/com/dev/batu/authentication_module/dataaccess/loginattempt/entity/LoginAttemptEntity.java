@@ -23,5 +23,7 @@ public class LoginAttemptEntity {
 
     private ZonedDateTime attemptedAt;
 
+    private String excMessage;
+
     private boolean isSuccess;
 }

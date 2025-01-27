@@ -34,10 +34,10 @@ public class RegisterCommandHelper {
         checkUser(user.getEmail());
         UserCreatedEvent userCreatedEvent = domainService.initializeUser(user);
         log.info("User id= {} \t Contact id= {}",
-                userCreatedEvent.getUser(), userCreatedEvent.getUser().getContact().getId().getValue());
-        saveContact(userCreatedEvent.getUser().getContact(), userCreatedEvent.getUser());
+                userCreatedEvent.getUser().getId().getValue(),
+                userCreatedEvent.getUser().getContact().getId().getValue());
+        saveContact(userCreatedEvent.getUser().getContact());
         saveUser(userCreatedEvent.getUser());
-        log.info("User and contact saved in to the persist store successfully!");
         return userCreatedEvent;
     }
 
@@ -47,6 +47,7 @@ public class RegisterCommandHelper {
             log.error("User with email= {} already exists!", user.get().getEmail());
             throw new DuplicationException("User with email= " + user.get().getEmail() + " already exists!");
         }
+        log.info("No duplication happen at email check for email= {}", email);
     }
 
     private void saveUser(User user){
@@ -55,14 +56,16 @@ public class RegisterCommandHelper {
             log.error("While saving the user in to persist store an error occur!");
             throw new UserDomainException("While saving the user in to persist store an error occur!");
         }
+        log.info("User saved successfully with user id= {}", userResult.getId().getValue());
     }
 
-    private void saveContact(Contact contact, User user) {
-        Contact contactResult = contactRepository.save(contact, user);
+    private void saveContact(Contact contact) {
+        Contact contactResult = contactRepository.save(contact);
         if(contactResult == null){
             log.error("While saving the contact in the persist store an error occur!");
             throw new ContactDomainException("While saving the contact in the persist store an error occur!");
         }
+        log.info("Contact saved successfully with contact id= {}", contactResult.getId().getValue());
     }
 
 }
