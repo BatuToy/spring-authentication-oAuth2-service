@@ -1,5 +1,4 @@
 version: '3.7'
-
 services:
   postgres-auth:
     image: postgres:12
@@ -10,3 +9,12 @@ services:
       POSTGRES_DATABASE: auth_db
     ports:
       - "5432:5432"
+
+  kafka:
+    image: confluentinc/cp-kafka
+    hostname: kafka-broker
+    container_name: kafka-broker
+    ports:
+      - "8081:8081"
+    environment:
+      KAFKA_CLUSTER_ID: 1

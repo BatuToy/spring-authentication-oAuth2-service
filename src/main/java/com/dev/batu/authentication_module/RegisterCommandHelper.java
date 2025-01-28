@@ -3,7 +3,7 @@ package com.dev.batu.authentication_module;
 import com.dev.batu.authentication_module.domain.DomainService;
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
 import com.dev.batu.authentication_module.domain.entity.Contact;
-import com.dev.batu.authentication_module.domain.event.user.UserCreatedEvent;
+import com.dev.batu.authentication_module.domain.event.user.UserRegisteredEvent;
 import com.dev.batu.authentication_module.domain.exception.UserDomainException;
 import com.dev.batu.authentication_module.dto.register.RegisterCommand;
 import com.dev.batu.authentication_module.exception.ContactDomainException;
@@ -29,16 +29,16 @@ public class RegisterCommandHelper {
     private final ContactRepository contactRepository;
 
     @Transactional
-    public UserCreatedEvent persistUser(RegisterCommand registerCommand){
+    public UserRegisteredEvent persistUser(RegisterCommand registerCommand){
         User user = userDataMapper.registerCommandToDomainUser(registerCommand);
         checkUser(user.getEmail());
-        UserCreatedEvent userCreatedEvent = domainService.initializeUser(user);
+        UserRegisteredEvent userRegisteredEvent = domainService.initializeUser(user);
         log.info("User id= {} \t Contact id= {}",
-                userCreatedEvent.getUser().getId().getValue(),
-                userCreatedEvent.getUser().getContact().getId().getValue());
-        saveContact(userCreatedEvent.getUser().getContact());
-        saveUser(userCreatedEvent.getUser());
-        return userCreatedEvent;
+                userRegisteredEvent.getUser().getId().getValue(),
+                userRegisteredEvent.getUser().getContact().getId().getValue());
+        saveContact(userRegisteredEvent.getUser().getContact());
+        saveUser(userRegisteredEvent.getUser());
+        return userRegisteredEvent;
     }
 
     private void checkUser(String email) {

@@ -1,4 +1,4 @@
-package com.dev.batu.authentication_module.common;
+package com.dev.batu.authentication_module.common.entity;
 
 import java.util.Objects;
 

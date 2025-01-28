@@ -32,6 +32,7 @@ public class AuthController {
                 "Registered successfully in the application!"
         );
     }
+
     @PostMapping(value = "/login")
     public AppResponse<LoginResponse> login(@RequestBody LoginCommand loginCommand){
         log.info("Login started for user with email= {}", loginCommand.getEmail());

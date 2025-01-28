@@ -1,19 +1,18 @@
 package com.dev.batu.authentication_module.domain.entity;
 
-import com.dev.batu.authentication_module.common.AggregateRoot;
-import com.dev.batu.authentication_module.common.BaseEntity;
+import com.dev.batu.authentication_module.common.entity.BaseEntity;
 import com.dev.batu.authentication_module.domain.valueobject.LoginAttemptId;
-import com.fasterxml.jackson.databind.ser.Serializers;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class LoginAttempt extends BaseEntity<LoginAttemptId> {
 
-    private final ZonedDateTime attemptedAt;
+    private ZonedDateTime attemptedAt;
 
     private String excMessage;
 
-    private  boolean isSuccess;
+    private boolean isSuccess;
 
     public LoginAttempt(LoginAttemptId loginAttemptId, ZonedDateTime attemptedAt, String excMessage, boolean isSuccess) {
         this.excMessage = excMessage;
@@ -28,6 +27,20 @@ public class LoginAttempt extends BaseEntity<LoginAttemptId> {
         this.isSuccess = isSuccess;
     }
 
+    public LoginAttempt(){}
+
+    public void setFailure(String message){
+        this.excMessage = message;
+        this.isSuccess = false;
+        attemptedAt = ZonedDateTime.now(ZoneId.of("UTC"));
+    }
+
+    public void defaultAttempt(){
+        this.isSuccess = true;
+        this.excMessage = "";
+        attemptedAt = ZonedDateTime.now(ZoneId.of("UTC"));
+    }
+
     public ZonedDateTime getAttemptedAt() {
         return attemptedAt;
     }
@@ -36,16 +49,9 @@ public class LoginAttempt extends BaseEntity<LoginAttemptId> {
         return excMessage;
     }
 
-    public boolean isSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(boolean success) {
-        isSuccess = success;
-    }
-
     public void setExcMessage(String excMessage) {
         this.excMessage = excMessage;
     }
+
 }
 

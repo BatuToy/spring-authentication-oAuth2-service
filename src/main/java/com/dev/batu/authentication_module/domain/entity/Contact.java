@@ -1,6 +1,6 @@
 package com.dev.batu.authentication_module.domain.entity;
 
-import com.dev.batu.authentication_module.common.BaseEntity;
+import com.dev.batu.authentication_module.common.entity.BaseEntity;
 import com.dev.batu.authentication_module.domain.valueobject.ContactId;
 import com.dev.batu.authentication_module.domain.valueobject.UserId;
 

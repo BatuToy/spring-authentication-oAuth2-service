@@ -2,9 +2,11 @@ package com.dev.batu.authentication_module;
 
 import com.dev.batu.authentication_module.config.security.helper.JwtHelper;
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
+import com.dev.batu.authentication_module.domain.event.loginAttempt.UserAuthenticateEvent;
 import com.dev.batu.authentication_module.dto.login.LoginCommand;
 import com.dev.batu.authentication_module.dto.login.LoginResponse;
 import com.dev.batu.authentication_module.exception.NotFountException;
+import com.dev.batu.authentication_module.ports.input.message.KafkaUserLogInMessagePublisher;
 import com.dev.batu.authentication_module.ports.output.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +21,19 @@ import org.springframework.stereotype.Component;
 public class LoginCommandHandler {
 
     private final LoginCommandHelper loginCommandHelper;
+    private final KafkaUserLogInMessagePublisher kafkaUserLogInMessagePublisher;
     private final UserRepository userRepository;
     private final JwtHelper jwtHelper;
     private final PasswordEncoder passwordEncoder;
 
+
     public LoginResponse login(LoginCommand loginCommand) {
-        UserDetails user = (UserDetails) findUserByEmail(loginCommand.getEmail());
+        UserDetails user = findUserByEmail(loginCommand.getEmail());
         checkPassword(loginCommand.getRawPassword(), user.getPassword());
-        loginCommandHelper.persisLoginAttempt(loginCommand);
-        return new LoginResponse(jwtHelper.generateToken(user),
+        UserAuthenticateEvent userAuthenticateEvent = loginCommandHelper.persisLoginAttempt(loginCommand);
+        kafkaUserLogInMessagePublisher.send(userAuthenticateEvent);
+        return new LoginResponse(
+                jwtHelper.generateToken(user),
                 "Login processed successfully for user with email = " + loginCommand.getEmail());
     }
 

@@ -1,6 +1,6 @@
 package com.dev.batu.authentication_module.domain.event.user;
 
-import com.dev.batu.authentication_module.common.DomainEvent;
+import com.dev.batu.authentication_module.common.event.DomainEvent;
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
 
 import java.time.ZonedDateTime;

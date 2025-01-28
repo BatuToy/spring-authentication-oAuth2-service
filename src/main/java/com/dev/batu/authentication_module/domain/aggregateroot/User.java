@@ -1,6 +1,6 @@
 package com.dev.batu.authentication_module.domain.aggregateroot;
 
-import com.dev.batu.authentication_module.common.BaseEntity;
+import com.dev.batu.authentication_module.common.entity.BaseEntity;
 import com.dev.batu.authentication_module.domain.entity.Contact;
 import com.dev.batu.authentication_module.domain.exception.UserDomainException;
 import com.dev.batu.authentication_module.domain.entity.Role;
@@ -25,7 +25,7 @@ public class User extends BaseEntity<UserId> implements UserDetails {
 
     private String userName;
     private ZonedDateTime updatedAt;
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles;
 
     public User(String userName, String email, String encodedPassword, Contact contact, ZonedDateTime createdAt, ZonedDateTime updatedAt, Set<Role> roles) {
         this.userName = userName;
@@ -54,11 +54,10 @@ public class User extends BaseEntity<UserId> implements UserDetails {
     }
 
     private void initializeRoleToUser(){
-        HashSet<Role> roles = new HashSet<>();
+        Set<Role> tempRoles = new HashSet<>();
         Role role = new Role();
-        Role new_role = role.initializeRole(super.getId());
-        roles.add(new_role);
-        this.roles = roles;
+        tempRoles.add(role.initializeRole(super.getId()));
+        this.roles = tempRoles;
     }
 
     private void validateRoles(){
