@@ -1,6 +1,4 @@
-package com.dev.batu.authentication_module.exception;
-
-import com.dev.batu.authentication_module.domain.exception.DomainException;
+package com.dev.batu.authentication_module.domain.exception;
 
 public class ContactDomainException extends DomainException {
 

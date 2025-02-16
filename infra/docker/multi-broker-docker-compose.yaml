@@ -1,0 +1,112 @@
+version: '3.7'
+
+# docker-compose --env-file <env-file_path> -f <compose_file> up
+# docker-compose --env-file ./env/kafka-variables.sh -f multi-broker-docker-compose.yaml up
+
+networks:
+  default:
+    name: kafka_multi_broker
+
+services:
+  # Controller container!
+  kafka1:
+      image: confluentinc/cp-kafka:latest
+      hostname: kafka1
+      container_name: kafka1
+      ports:
+        - "19091:19091"
+      environment:
+        KAFKA_NODE_ID: 1
+        KAFKA_KRAFT_MODE: 'true'
+        CLUSTER_ID: '${CLUSTER_ID}'
+        KAFKA_PROCESS_ROLES: 'controller'
+        KAFKA_CONTROLLER_QUORUM_VOTERS: '${CONTROLLER_QUORUM_VOTERS}'
+        KAFKA_LISTENERS: CONTROLLER://0.0.0.0:19091
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT
+        KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+        KAFKA_LOG_DIRS: '${KAFKA_LOG_DIRS}'
+      volumes:
+        - ./kafka-data-1:/var/lib/kafka/data
+  # Broker 1
+
+  kafka2:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka2
+    container_name: kafka2
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_PROCESS_ROLES: 'broker'
+      CLUSTER_ID: '${CLUSTER_ID}'
+      KAFKA_KRAFT_MODE: 'true'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '${CONTROLLER_QUORUM_VOTERS}'
+      KAFKA_LISTENERS: PLAINTEXT_HOST://0.0.0.0:29092,PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS:  PLAINTEXT_HOST://localhost:29092,PLAINTEXT://kafka2:9092   # Not insert controller.
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_HOST:PLAINTEXT,PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: '${KAFKA_LOG_DIRS}'
+    volumes:
+      - ./kafka-data-2:/var/lib/kafka/data
+
+  kafka3:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka3
+    container_name: kafka3
+    ports:
+      - "29093:29093"
+      - "19093:19093"
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      CLUSTER_ID: '${CLUSTER_ID}'
+      KAFKA_KRAFT_MODE: 'true'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '${CONTROLLER_QUORUM_VOTERS}'
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:29093,CONTROLLER://0.0.0.0:19093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9093,PLAINTEXT_HOST://localhost:29093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT, CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: '${KAFKA_LOG_DIRS}'
+    volumes:
+      - ./kafka-data-3:/var/lib/kafka/data
+
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    hostname: kafka-ui
+    ports:
+      - "8080:8080"
+    container_name: kafka-ui
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: PLAINTEXT://kafka2:9092, PLAINTEXT://kafka3:9093
+
+
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: init-kafka
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      sleep 10
+      # delete if there is topic lefts in the old kafka instance!
+      kafka-topics --bootstrap-server kafka2:9092 --topic register --if-exists --delete
+      kafka-topics --bootstrap-server kafka2:9092 --topic login --if-exists --delete
+      kafka-topics --bootstrap-server kafka2:9092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka2:9092 --topic register --if-not-exists --replication-factor 1 --partitions 1 --create
+      kafka-topics --bootstrap-server kafka2:9092 --topic login --if-not-exists --replication-factor 1 --partitions 1 --create
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka2:9092 --list
+      exit
+      "

@@ -1,0 +1,18 @@
+version: '3.7'
+
+# docker-compose --env-file ./infra/docker/env/kafka-variables.sh.dev -f ./infra/docker/postgres-docker-compose.yaml issue solved!!!
+
+networks:
+  default:
+    name: postgres-db-authentication
+
+services:
+  postgres-auth:
+    image: postgres:12
+    container_name: auth-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: auth_db
+    ports:
+      - "5432:5432"

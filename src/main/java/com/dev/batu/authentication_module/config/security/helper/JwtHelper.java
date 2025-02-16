@@ -27,7 +27,7 @@ public class JwtHelper {
     }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
-        return buildToken(new HashMap<>(), userDetails.getUsername());
+        return buildToken(extraClaims != null ? extraClaims : new HashMap<>(), userDetails.getUsername());
     }
 
     private String buildToken(Map<String, Object> extraClaims, String userName) {

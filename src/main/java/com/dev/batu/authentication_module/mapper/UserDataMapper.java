@@ -16,6 +16,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.dev.batu.authentication_module.common.constant.AppConstants.*;
+
 @RequiredArgsConstructor
 @Component
 public class UserDataMapper {
@@ -27,8 +29,8 @@ public class UserDataMapper {
                 .email(registerCommand.getEmail())
                 .userName(registerCommand.getUserName())
                 .encodedPassword(passwordEncoder.encode(registerCommand.getRawPassword()))
-                .createdAt(ZonedDateTime.now(ZoneId.of("UTC")))
-                .updatedAt(ZonedDateTime.now(ZoneId.of("UTC")))
+                .createdAt(ZonedDateTime.now(ZoneId.of(UTC)))
+                .updatedAt(ZonedDateTime.now(ZoneId.of(UTC)))
                 .contact(contactDtoToContact(registerCommand.getContact()))
                 .build();
     }
@@ -41,17 +43,17 @@ public class UserDataMapper {
                 .build();
     }
 
-
     public List<LoginAttemptResult> loginAttemptsToLoginAttemptResults(List<LoginAttempt> loginAttempts){
         return loginAttempts.stream()
                 .map((loginAttempt -> LoginAttemptResult.builder()
                         .attemptAt(loginAttempt.getAttemptedAt())
                         .isSuccess(loginAttempt.isSuccess())
+                        .excMessage(loginAttempt.getExcMessage())
                         .build()))
                 .toList();
     }
 
-    private Contact contactDtoToContact(com.dev.batu.authentication_module.dto.register.Contact contact){
+    private Contact contactDtoToContact(com.dev.batu.authentication_module.dto.register.Contact contact) {
         return new Contact(contact.getPhoneNumber());
     }
 }

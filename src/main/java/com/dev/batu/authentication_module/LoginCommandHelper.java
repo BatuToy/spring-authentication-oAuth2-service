@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +27,14 @@ public class LoginCommandHelper {
     private final AuthenticationManager authenticationManager;
     private final LoginAttemptCommandHelper loginAttemptCommandHelper;
     private final DomainService domainService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserAuthenticateEvent persisLoginAttempt(LoginCommand loginCommand) {
         log.info("Persisting the login attempt saving for user with email= {}", loginCommand.getEmail());
         UserAuthenticateEvent userAuthenticateEvent = domainService.authenticateUser();
         LoginAttempt loginAttempt = userAuthenticateEvent.getLoginAttempt();
-        authenticateUser(loginCommand,loginAttempt);
+        authenticateUser(loginCommand, loginAttempt);
         loginAttemptCommandHelper.saveLoginAttempt(loginAttempt);
         log.info("Login attempted successfully with id= {}", loginAttempt.getId().getValue());
         return userAuthenticateEvent;
@@ -49,5 +51,6 @@ public class LoginCommandHelper {
             throw new BadCredentialsException("Authentication for login fails cause of bad credentials \t error= " + exc.getMessage());
         }
     }
+
 
 }

@@ -1,35 +1,58 @@
 spring:
   application:
     name: auth-service
-  config:
-    import: file:./src/main/resources/.env[.properties]
-  datasource:
-    url: jdbc:postgresql://localhost:5432/auth_db
-    username: ${POSTGRES_USERNAME}
-    password: ${POSTGRES_PASSWORD}
+
+  kafka:
+    bootstrap-servers: http://localhost:29092,http://localhost:29093
+    consumer:
+      properties:
+        spring.json.trusted.packages: "*"
+
+  jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: postgres
+    password: postgres
+
   security:
     oauth2:
       client:
         registration:
           github:
-            client-id: ${GITHUB_CLIENT_ID}
-            client-secret: ${GITHUB_SECRET_ID}
+            client-id: Ov23liG96dkkFIyOKyJc
+            client-secret: 36a7a9dc748acca33b0d0c622018290ac9f53ab1
+
+kafka:
+  bootstrap-servers: http://localhost:29092,http://localhost:29093
+kafka-consumer:
+  group-id: authentication-group
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+  session-timeout-ms: 10000
+  max-poll-records: 20
+  auto-offset-reset: earliest
+kafka-producer:
+  key-serializer: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  acks: all
+
+
 server:
   servlet:
     context-path: "/api/v1"
   port: 9090
+
 logging:
   level:
     org:
       springframework:
+        kafka: TRACE
         security: TRACE
+
 
 
 

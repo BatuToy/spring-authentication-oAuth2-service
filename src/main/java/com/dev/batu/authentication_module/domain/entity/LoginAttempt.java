@@ -5,6 +5,9 @@ import com.dev.batu.authentication_module.domain.valueobject.LoginAttemptId;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.UUID;
+
+import static com.dev.batu.authentication_module.common.constant.AppConstants.*;
 
 public class LoginAttempt extends BaseEntity<LoginAttemptId> {
 
@@ -32,13 +35,14 @@ public class LoginAttempt extends BaseEntity<LoginAttemptId> {
     public void setFailure(String message){
         this.excMessage = message;
         this.isSuccess = false;
-        attemptedAt = ZonedDateTime.now(ZoneId.of("UTC"));
+        attemptedAt = ZonedDateTime.now(ZoneId.of(UTC));
     }
 
     public void defaultAttempt(){
+        super.setId(new LoginAttemptId(UUID.randomUUID()));
         this.isSuccess = true;
-        this.excMessage = "";
-        attemptedAt = ZonedDateTime.now(ZoneId.of("UTC"));
+        this.excMessage = DELIMITER;
+        attemptedAt = ZonedDateTime.now(ZoneId.of(UTC));
     }
 
     public ZonedDateTime getAttemptedAt() {
@@ -48,6 +52,8 @@ public class LoginAttempt extends BaseEntity<LoginAttemptId> {
     public String getExcMessage() {
         return excMessage;
     }
+
+    public boolean isSuccess() {return isSuccess;}
 
     public void setExcMessage(String excMessage) {
         this.excMessage = excMessage;

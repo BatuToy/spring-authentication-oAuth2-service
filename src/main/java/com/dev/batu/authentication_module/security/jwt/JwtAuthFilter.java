@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -36,6 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String authHeader = request.getHeader("Authorization");
+            // Todo: Avoid the null pointer exception from the token side and userName in case of null value represents the filter!
             String token = null;
             String userName = null;
             if(authHeader != null && authHeader.startsWith("Bearer ")){
@@ -53,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
                 if(jwtHelper.isTokenValid(token, userDetails)){
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,  authorities);
-                    authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request)); // new WebAuthenticationDetails(request);
+                    authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request)); //.buildDetails(request)); || new WebAuthenticationDetails(request);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }

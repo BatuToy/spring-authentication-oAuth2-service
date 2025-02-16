@@ -46,10 +46,11 @@ public class AuthController {
     }
 
     @GetMapping(value = "/loginAttempts")
-    @PreAuthorize("hasRole('ADMIN')")
-    public AppResponse<TrackLoginAttemptsResponse> loginAttempts(){
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public AppResponse<TrackLoginAttemptsResponse> trackLoginAttempts(){
         log.info("Login attempts starting to listing!");
         TrackLoginAttemptsResponse response = applicationService.trackLoginAttempts();
+        log.info("Login attempts listed successfully!");
         return new AppResponse<>(
                 response,
                 HttpStatus.OK,

@@ -6,8 +6,4 @@ public class DuplicationException extends AuthenticationException {
     public DuplicationException(String msg) {
         super(msg);
     }
-
-    public DuplicationException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
 }

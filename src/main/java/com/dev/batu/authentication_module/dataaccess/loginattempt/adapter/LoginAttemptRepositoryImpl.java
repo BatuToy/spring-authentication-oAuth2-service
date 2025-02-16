@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -29,7 +30,7 @@ public class LoginAttemptRepositoryImpl implements LoginAttemptRepository {
     public List<LoginAttempt> listAllAttempts() {
         return loginAttemptJpaRepository.findAll()
                 .stream()
-                    .map(loginAttemptDataAccessMapper::loginAttemptEntityToLoginAttempt)
-                        .toList();
+                .map(loginAttemptDataAccessMapper::loginAttemptEntityToLoginAttempt)
+                .toList();
     }
 }

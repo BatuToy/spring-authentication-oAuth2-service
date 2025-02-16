@@ -1,7 +1,7 @@
 package com.dev.batu.authentication_module.common.valueobject;
 
 import java.util.Objects;
-
+// value-object
 public abstract class BaseId<T> {
     private final T value;
 

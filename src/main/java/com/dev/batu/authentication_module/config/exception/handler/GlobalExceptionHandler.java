@@ -1,20 +1,21 @@
 package com.dev.batu.authentication_module.config.exception.handler;
 
+import com.dev.batu.authentication_module.common.constant.AppConstants;
 import com.dev.batu.authentication_module.config.exception.dto.ErrorDto;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import java.nio.file.AccessDeniedException;
 import java.util.stream.Collectors;
 
+import static com.dev.batu.authentication_module.common.constant.AppConstants.*;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
@@ -88,7 +89,7 @@ public class GlobalExceptionHandler {
     private String extractViolation(ConstraintViolationException exc) {
         return exc.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining("---"));
+                .collect(Collectors.joining(DELIMITER));
     }
 
 

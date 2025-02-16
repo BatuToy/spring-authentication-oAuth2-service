@@ -1,11 +1,10 @@
 package com.dev.batu.authentication_module.dto.login;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 @AllArgsConstructor
@@ -17,4 +16,6 @@ public class LoginAttemptResult {
 
     @NotNull
     private final Boolean isSuccess;
+
+    private final String excMessage;
 }

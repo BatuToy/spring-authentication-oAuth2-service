@@ -6,7 +6,7 @@ import com.dev.batu.authentication_module.domain.entity.Contact;
 import com.dev.batu.authentication_module.domain.event.user.UserRegisteredEvent;
 import com.dev.batu.authentication_module.domain.exception.UserDomainException;
 import com.dev.batu.authentication_module.dto.register.RegisterCommand;
-import com.dev.batu.authentication_module.exception.ContactDomainException;
+import com.dev.batu.authentication_module.domain.exception.ContactDomainException;
 import com.dev.batu.authentication_module.exception.DuplicationException;
 import com.dev.batu.authentication_module.mapper.UserDataMapper;
 import com.dev.batu.authentication_module.ports.output.ContactRepository;
@@ -31,7 +31,7 @@ public class RegisterCommandHelper {
     @Transactional
     public UserRegisteredEvent persistUser(RegisterCommand registerCommand){
         User user = userDataMapper.registerCommandToDomainUser(registerCommand);
-        checkUser(user.getEmail());
+        checkEmail(user.getEmail());
         UserRegisteredEvent userRegisteredEvent = domainService.initializeUser(user);
         log.info("User id= {} \t Contact id= {}",
                 userRegisteredEvent.getUser().getId().getValue(),
@@ -41,13 +41,13 @@ public class RegisterCommandHelper {
         return userRegisteredEvent;
     }
 
-    private void checkUser(String email) {
+    private void checkEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             log.error("User with email= {} already exists!", user.get().getEmail());
             throw new DuplicationException("User with email= " + user.get().getEmail() + " already exists!");
         }
-        log.info("No duplication happen at email check for email= {}", email);
+        log.info("Not any duplication exception at email check for email= {}", email);
     }
 
     private void saveUser(User user){

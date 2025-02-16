@@ -1,12 +1,18 @@
 package com.dev.batu.authentication_module.security.userdetails;
 
+import com.dev.batu.authentication_module.dataaccess.user.entity.UserEntity;
+import com.dev.batu.authentication_module.dataaccess.user.repo.UserJpaRepository;
 import com.dev.batu.authentication_module.ports.output.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

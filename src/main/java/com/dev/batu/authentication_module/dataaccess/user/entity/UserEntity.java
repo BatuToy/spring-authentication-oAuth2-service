@@ -1,20 +1,12 @@
 package com.dev.batu.authentication_module.dataaccess.user.entity;
 
 import com.dev.batu.authentication_module.dataaccess.contact.entity.ContactEntity;
-import com.dev.batu.authentication_module.domain.entity.Contact;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.pl.PESEL;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

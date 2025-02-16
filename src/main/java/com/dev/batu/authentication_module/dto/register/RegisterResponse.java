@@ -1,9 +1,10 @@
 package com.dev.batu.authentication_module.dto.register;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Builder

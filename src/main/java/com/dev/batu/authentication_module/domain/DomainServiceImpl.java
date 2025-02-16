@@ -1,6 +1,5 @@
 package com.dev.batu.authentication_module.domain;
 
-import com.dev.batu.authentication_module.common.constant.Constants;
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
 import com.dev.batu.authentication_module.domain.entity.LoginAttempt;
 import com.dev.batu.authentication_module.domain.event.loginAttempt.UserAuthenticateEvent;
@@ -9,7 +8,7 @@ import com.dev.batu.authentication_module.domain.event.user.UserRegisteredEvent;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static com.dev.batu.authentication_module.common.constant.Constants.*;
+import static com.dev.batu.authentication_module.common.constant.AppConstants.*;
 
 public class DomainServiceImpl implements DomainService{
 
