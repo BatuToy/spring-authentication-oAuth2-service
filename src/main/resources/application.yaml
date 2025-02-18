@@ -23,9 +23,8 @@ spring:
       client:
         registration:
           github:
-            client-id: Ov23liG96dkkFIyOKyJc
-            client-secret: 36a7a9dc748acca33b0d0c622018290ac9f53ab1
-
+            client-id: *
+            client-secret: *
 kafka:
   bootstrap-servers: http://localhost:29092,http://localhost:29093
 kafka-consumer:
