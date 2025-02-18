@@ -15,6 +15,7 @@ services:
       container_name: kafka1
       ports:
         - "19091:19091"
+        - "9101:9101"
       environment:
         KAFKA_NODE_ID: 1
         KAFKA_KRAFT_MODE: 'true'
@@ -25,6 +26,13 @@ services:
         KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT
         KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
         KAFKA_LOG_DIRS: '${KAFKA_LOG_DIRS}'
+        KAFKA_JMX_OPTS: >
+          -Dcom.sun.management.jmxremote=true
+          -Dcom.sun.management.jmxremote.authenticate=false
+          -Dcom.sun.management.jmxremote.ssl=false 
+          -Dcom.sun.management.jmxremote.port=9101
+          -Dcom.sun.management.jmxremote.rmi.port=9101
+          -Djava.rmi.server.hostname=kafka1
       volumes:
         - ./kafka-data-1:/var/lib/kafka/data
   # Broker 1
@@ -36,6 +44,7 @@ services:
     ports:
       - "9092:9092"
       - "29092:29092"
+      - "9202:9202"
     environment:
       KAFKA_NODE_ID: 2
       KAFKA_PROCESS_ROLES: 'broker'
@@ -48,6 +57,13 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LOG_DIRS: '${KAFKA_LOG_DIRS}'
+      KAFKA_JMX_OPTS: >
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.authenticate=false
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.port=9202
+        -Dcom.sun.management.jmxremote.rmi.port=9202
+        -Djava.rmi.server.hostname=kafka2
     volumes:
       - ./kafka-data-2:/var/lib/kafka/data
 
@@ -59,6 +75,7 @@ services:
       - "29093:29093"
       - "19093:19093"
       - "9093:9093"
+      - "9303:9303"
     environment:
       KAFKA_NODE_ID: 3
       KAFKA_PROCESS_ROLES: 'broker,controller'
@@ -71,6 +88,14 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LOG_DIRS: '${KAFKA_LOG_DIRS}'
+      # Disable SSL and authentication for JMX
+      KAFKA_JMX_OPTS: >
+        -Dcom.sun.management.jmxremote=true
+        -Dcom.sun.management.jmxremote.authenticate=false
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.port=9303
+        -Dcom.sun.management.jmxremote.rmi.port=9303
+        -Djava.rmi.server.hostname=kafka3
     volumes:
       - ./kafka-data-3:/var/lib/kafka/data
 

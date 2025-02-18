@@ -1,4 +1,4 @@
-package com.dev.batu.authentication_module.domain.event.loginAttempt;
+package com.dev.batu.authentication_module.domain.event.loginattempt;
 
 import com.dev.batu.authentication_module.common.event.DomainEvent;
 import com.dev.batu.authentication_module.domain.entity.LoginAttempt;

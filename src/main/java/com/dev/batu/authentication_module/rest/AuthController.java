@@ -1,6 +1,8 @@
 package com.dev.batu.authentication_module.rest;
 
+import com.dev.batu.authentication_module.dto.authorize.AuthorizeUserCommand;
 import com.dev.batu.authentication_module.dto.login.TrackLoginAttemptsResponse;
+import com.dev.batu.authentication_module.dto.authorize.AuthorizeResponse;
 import com.dev.batu.authentication_module.ports.input.AuthenticationApplicationService;
 import com.dev.batu.authentication_module.dto.login.LoginCommand;
 import com.dev.batu.authentication_module.dto.login.LoginResponse;
@@ -46,7 +48,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/loginAttempts")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public AppResponse<TrackLoginAttemptsResponse> trackLoginAttempts(){
         log.info("Login attempts starting to listing!");
         TrackLoginAttemptsResponse response = applicationService.trackLoginAttempts();
@@ -56,5 +58,18 @@ public class AuthController {
                 HttpStatus.OK,
                 "Login attempts listed successfully!"
         );
+    }
+
+    @PutMapping(value = "/authorize")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public AppResponse<AuthorizeResponse> authorize(@RequestBody  AuthorizeUserCommand authorizeUserCommand){
+        log.info("Authorization started for user with email= {} ", authorizeUserCommand.getEmail());
+        AuthorizeResponse authorizeResponse = applicationService.authorize(authorizeUserCommand);
+        log.info("Authorization finish successfully for user with id= {}", authorizeResponse.getUserId().toString());
+        return new AppResponse<>(
+                authorizeResponse,
+                HttpStatus.ACCEPTED,
+                "User with id= " + authorizeResponse.getUserId().toString() + " authorized to admin successfully!"
+                );
     }
 }

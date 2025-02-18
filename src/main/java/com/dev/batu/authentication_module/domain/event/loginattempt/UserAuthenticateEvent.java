@@ -1,7 +1,6 @@
-package com.dev.batu.authentication_module.domain.event.loginAttempt;
+package com.dev.batu.authentication_module.domain.event.loginattempt;
 
 import com.dev.batu.authentication_module.domain.entity.LoginAttempt;
-import com.dev.batu.authentication_module.domain.event.user.UserEvent;
 
 import java.time.ZonedDateTime;
 

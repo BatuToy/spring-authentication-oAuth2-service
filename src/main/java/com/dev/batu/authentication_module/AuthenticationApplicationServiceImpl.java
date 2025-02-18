@@ -1,5 +1,7 @@
 package com.dev.batu.authentication_module;
 
+import com.dev.batu.authentication_module.dto.authorize.AuthorizeResponse;
+import com.dev.batu.authentication_module.dto.authorize.AuthorizeUserCommand;
 import com.dev.batu.authentication_module.dto.login.TrackLoginAttemptsResponse;
 import com.dev.batu.authentication_module.dto.login.LoginCommand;
 import com.dev.batu.authentication_module.dto.login.LoginResponse;
@@ -20,6 +22,7 @@ public class AuthenticationApplicationServiceImpl implements AuthenticationAppli
     private final RegisterCommandHandler registerCommandHandler;
     private final LoginCommandHandler loginCommandHandler;
     private final TrackLoginAttemptsQuery trackLoginAttemptsQuery;
+    private final AuthorizeCommandHandler authorizeCommandHandler;
 
     @Override
     public RegisterResponse register(RegisterCommand registerCommand) {
@@ -29,6 +32,11 @@ public class AuthenticationApplicationServiceImpl implements AuthenticationAppli
     @Override
     public TrackLoginAttemptsResponse trackLoginAttempts() {
         return trackLoginAttemptsQuery.trackLoginAttemptsQuery();
+    }
+
+    @Override
+    public AuthorizeResponse authorize(AuthorizeUserCommand authorizeUserCommand) {
+        return authorizeCommandHandler.authorizeUser(authorizeUserCommand);
     }
 
     @Override

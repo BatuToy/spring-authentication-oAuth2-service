@@ -1,6 +1,6 @@
 package com.dev.batu.authentication_module.domain.aggregateroot;
 
-import com.dev.batu.authentication_module.common.entity.BaseEntity;
+import com.dev.batu.authentication_module.common.entity.AggregateRoot;
 import com.dev.batu.authentication_module.domain.entity.Contact;
 import com.dev.batu.authentication_module.domain.exception.UserDomainException;
 import com.dev.batu.authentication_module.domain.entity.Role;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class User extends BaseEntity<UserId> implements UserDetails {
+public class User extends AggregateRoot<UserId> implements UserDetails {
 
     public static final Logger log = Logger.getLogger(User.class.getName());
 
@@ -37,26 +37,40 @@ public class User extends BaseEntity<UserId> implements UserDetails {
         this.roles = roles;
     }
 
-    public void initializeUser(){
-        super.setId(new UserId( UUID.randomUUID()));
-        initializeContactToUser();
-        initializeRoleToUser();
-    }
-
     public void validateUser(){
         validateId();
         validatePasswordAndEmail();
         validateRoles();
     }
 
+    public void initializeUser(){
+        super.setId(new UserId( UUID.randomUUID()));
+        initializeContactToUser();
+        initializeDefaultRole();
+    }
+
+    public void validateRoleAdmin(){
+        if(this.roles.stream().anyMatch(r -> Objects.equals(r.getRoleName(), "ROLE_ADMIN"))){
+            throw new UserDomainException("User is not correct state for authorization admin process with id= " + getId().getValue());
+        }
+    }
+
+    // Todo: Only admin endpoint can use this method. Open a new endpoint to give a USER authorized to ADMIN level.
+    public void initializeAdminRole(){
+        Set<Role> tempRoles = new HashSet<>();
+        Role roleAdmin = new Role();
+        tempRoles.add(roleAdmin.initializeRoleAdmin(super.getId()));
+        this.roles = tempRoles;
+    }
+
     private void initializeContactToUser(){
         contact.initializeContact(super.getId());
     }
 
-    private void initializeRoleToUser(){
+    private void initializeDefaultRole(){
         Set<Role> tempRoles = new HashSet<>();
-        Role role = new Role();
-        tempRoles.add(role.initializeRole(super.getId()));
+        Role roleUser = new Role();
+        tempRoles.add(roleUser.initializeRoleUser(super.getId()));
         this.roles = tempRoles;
     }
 

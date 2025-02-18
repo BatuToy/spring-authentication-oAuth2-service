@@ -28,9 +28,16 @@ public class Role extends BaseEntity<RoleId> {
         return roleName;
     }
 
-    public Role initializeRole(UserId userId){
+    public Role initializeRoleUser(UserId userId){
         super.setId( new RoleId(UUID.randomUUID()));
         this.roleName = "ROLE_USER";
+        this.userId = userId;
+        return this;
+    }
+
+    public Role initializeRoleAdmin(UserId userId){
+        super.setId(new RoleId(UUID.randomUUID()));
+        this.roleName = "ROLE_ADMIN";
         this.userId = userId;
         return this;
     }

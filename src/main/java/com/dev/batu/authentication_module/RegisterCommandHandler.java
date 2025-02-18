@@ -1,11 +1,10 @@
 package com.dev.batu.authentication_module;
 
-import com.dev.batu.authentication_module.common.constant.AppConstants;
 import com.dev.batu.authentication_module.domain.event.user.UserRegisteredEvent;
 import com.dev.batu.authentication_module.dto.register.RegisterCommand;
 import com.dev.batu.authentication_module.dto.register.RegisterResponse;
 import com.dev.batu.authentication_module.mapper.UserDataMapper;
-import com.dev.batu.authentication_module.ports.output.message.KafkaUserRegisteredMessagePublisher;
+import com.dev.batu.authentication_module.ports.output.message.KafkaPublishRegisterMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,7 @@ import static com.dev.batu.authentication_module.common.constant.AppConstants.*;
 public class RegisterCommandHandler {
 
     private final RegisterCommandHelper registerCommandHelper;
-    private final KafkaUserRegisteredMessagePublisher kafkaUserRegisteredMessagePublisher;
+    private final KafkaPublishRegisterMessage kafkaUserRegisteredMessagePublisher;
     private final UserDataMapper userDataMapper;
 
     public RegisterResponse register(RegisterCommand registerCommand) {

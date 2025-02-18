@@ -50,8 +50,8 @@ logging:
   level:
     org:
       springframework:
-        kafka: TRACE
-        security: TRACE
+        #kafka: TRACE
+        #security: TRACE
 
 
 

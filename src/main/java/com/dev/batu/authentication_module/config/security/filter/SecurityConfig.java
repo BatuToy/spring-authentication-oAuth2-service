@@ -36,11 +36,12 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/loginAttempts").hasAnyRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/auth/loginAttempts").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/auth/authorize").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Login(withDefaults())
                 .formLogin(withDefaults())
-                .authenticationManager(authenticationManager)
+                .authenticationManager()
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

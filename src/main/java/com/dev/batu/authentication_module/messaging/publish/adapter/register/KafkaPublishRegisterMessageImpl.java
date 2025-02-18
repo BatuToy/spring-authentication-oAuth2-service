@@ -1,9 +1,9 @@
-package com.dev.batu.authentication_module.messaging.publish.register.adapter;
+package com.dev.batu.authentication_module.messaging.publish.adapter.register;
 
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
 import com.dev.batu.authentication_module.domain.event.user.UserRegisteredEvent;
 import com.dev.batu.authentication_module.messaging.producer.KafkaProducer;
-import com.dev.batu.authentication_module.ports.output.message.KafkaUserRegisteredMessagePublisher;
+import com.dev.batu.authentication_module.ports.output.message.KafkaPublishRegisterMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class KafkaUserRegisteredMessagePublisherImpl implements KafkaUserRegisteredMessagePublisher {
+public class KafkaPublishRegisterMessageImpl implements KafkaPublishRegisterMessage {
 
     private final KafkaProducer<String, User> kafkaProducer;
 

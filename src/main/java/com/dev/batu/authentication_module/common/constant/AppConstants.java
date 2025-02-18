@@ -6,6 +6,7 @@ public class AppConstants {
     public static final String DELIMITER = "---";
     public static final String TOPIC_REGISTER = "register";
     public static final String TOPIC_LOGIN = "login";
+    public static final String TOPIC_AUTHORIZE = "authorize-admin";
 
     private AppConstants(){}
 }

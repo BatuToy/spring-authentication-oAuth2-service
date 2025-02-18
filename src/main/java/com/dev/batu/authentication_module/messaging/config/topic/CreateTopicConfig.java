@@ -27,4 +27,13 @@ public class CreateTopicConfig {
                 .partitions(ONE)
                 .build();
     }
+
+    @Bean
+    public NewTopic authorizeTopic(){
+        return TopicBuilder
+                .name(TOPIC_AUTHORIZE)
+                .replicas(ONE)
+                .partitions(ONE)
+                .build();
+    }
 }

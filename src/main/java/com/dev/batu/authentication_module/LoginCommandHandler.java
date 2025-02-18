@@ -2,11 +2,11 @@ package com.dev.batu.authentication_module;
 
 import com.dev.batu.authentication_module.config.security.helper.JwtHelper;
 import com.dev.batu.authentication_module.domain.aggregateroot.User;
-import com.dev.batu.authentication_module.domain.event.loginAttempt.UserAuthenticateEvent;
+import com.dev.batu.authentication_module.domain.event.loginattempt.UserAuthenticateEvent;
 import com.dev.batu.authentication_module.dto.login.LoginCommand;
 import com.dev.batu.authentication_module.dto.login.LoginResponse;
 import com.dev.batu.authentication_module.exception.NotFountException;
-import com.dev.batu.authentication_module.ports.output.message.KafkaUserLogInMessagePublisher;
+import com.dev.batu.authentication_module.ports.output.message.KafkaPublishLoginMessage;
 import com.dev.batu.authentication_module.ports.output.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import static com.dev.batu.authentication_module.common.constant.AppConstants.*;
 public class LoginCommandHandler {
 
     private final LoginCommandHelper loginCommandHelper;
-    private final KafkaUserLogInMessagePublisher kafkaUserLogInMessagePublisher;
+    private final KafkaPublishLoginMessage kafkaPublishLoginMessage;
     private final UserRepository userRepository;
     private final JwtHelper jwtHelper;
     private final PasswordEncoder passwordEncoder;
@@ -34,7 +34,7 @@ public class LoginCommandHandler {
         UserDetails user = findUserByEmail(loginCommand.getEmail());
         checkPassword(loginCommand.getRawPassword(), user.getPassword());
         UserAuthenticateEvent userAuthenticateEvent = loginCommandHelper.persisLoginAttempt(loginCommand);
-        kafkaUserLogInMessagePublisher.publish(userAuthenticateEvent, TOPIC_LOGIN);
+        kafkaPublishLoginMessage.publish(userAuthenticateEvent, TOPIC_LOGIN);
         return new LoginResponse(
                 jwtHelper.generateToken(user),
                 "Login processed successfully for user with email = " + loginCommand.getEmail());
