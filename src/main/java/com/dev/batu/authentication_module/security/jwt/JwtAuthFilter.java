@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,11 +47,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 log.info("Request object have \n Token= {} \n userName= {}", token, userName);
             }
             if(token == null){
-                log.info("Token not given passing!");
+                log.info("Token not provided!");
                 filterChain.doFilter(request, response);
                 return;
             }
             if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                // set the context authentication to in-memory while user using the application in to its authorizations!
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
                 Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
                 if(jwtHelper.isTokenValid(token, userDetails)){
@@ -60,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (AccessDeniedException exc){
+        } catch (AccessDeniedException | BadCredentialsException exc){
             log.error("Access denied= {}", exc.getLocalizedMessage());
             throw new AccessDeniedException("Access denied= " + exc.getLocalizedMessage());
         }
